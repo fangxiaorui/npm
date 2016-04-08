@@ -1,0 +1,32 @@
+environment:
+  matrix:
+    - nodejs_version: "0.8"
+    - nodejs_version: "0.10"
+    - nodejs_version: "0.12"
+    - nodejs_version: "4"
+    - nodejs_version: "5"
+
+platform:
+  - x86
+  - x64
+
+install:
+  - ps: Install-Product node $env:nodejs_version $env:platform
+  - npm config set spin false
+  - node . install -g .
+  - set PATH=%APPDATA%\npm;%PATH%
+  - npm install
+
+test_script:
+  - node --version
+  - npm --version
+  - npm test
+
+notifications:
+- provider: Slack
+  auth_token:
+    secure: i3Suz1hD0d1liX3M/sCcLq44Mb5dnT9Qb35vOxNgKUU=
+  channel: '#cli-gh-updates'
+
+# we don't need the builds, we just need tests
+build: off
